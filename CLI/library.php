@@ -164,7 +164,7 @@ function randomTextSelect($array)
  * @return boolean Success or failure
  */
 function convertSableXmlToWav($text, $output)
-{
+{   
     $out = fopen($output . '.sable', 'w');
     if ($out == false) {
         fclose($out);
@@ -538,6 +538,11 @@ function makeArrayFromObjects($src_array)
  */
 function generateOutputTracks($input, $output_root, $arrMetadata)
 {
+    debugout::add(PHP_EOL);
+    debugout::add("🔊 generateOutputTracks input:  " . $input . PHP_EOL);
+    debugout::add("🔊 generateOutputTracks output_root:  " . $output_root . PHP_EOL);
+    debugout::add("🔊 generateOutputTracks arrMetadata:  " . print_r($arrMetadata) . PHP_EOL);
+    debugout::add("🔊 Generating MP3 " .$input.' - '. $output_root . 'mp3'. PHP_EOL);
     // eyeD3 doesn't support "MP3 Extended" (AKA MP3 with Chapter Support), but it has been requested.
     generateOutputTracksAsMp3($input, $output_root . 'mp3', $arrMetadata);
     // Chapter information thanks to this page: http://code.google.com/p/subler/wiki/ChapterTextFormat
@@ -545,6 +550,14 @@ function generateOutputTracks($input, $output_root, $arrMetadata)
     generateOutputTracksAsM4a($input, $output_root, 'm4a', $arrMetadata);
     debugUnlink($input);
 }
+
+function WaitForSomeKeyboardDuty()
+{
+    $handle = fopen ("php://stdin","r");
+    $line = fgets($handle);
+    return true;
+}
+
 
 /**
 * Given a source filename, generate an MP3 from that source.
@@ -556,15 +569,21 @@ function generateOutputTracks($input, $output_root, $arrMetadata)
 * @return boolean Success or failure
 */
 function generateOutputTracksAsMp3($input, $output, $arrMetadata)
-{
+{  
+
+    debugout::add(PHP_EOL);
+    debugout::add('📦 CP1 ' .$input. PHP_EOL );
     if (file_exists($input)) {
+        debugout::add('📦 CP2' . PHP_EOL );
         $cmd = 'sox "' . $input . '" -t mp3 "' . $output . '"';
         if (debugExec($cmd) != 0) {
             if (file_exists($output)) {
                 debugUnlink($output);
             }
+            debugout::add('📦 CP3' . PHP_EOL );
             return false;
         }
+        debugout::add('📦 CP4' . PHP_EOL );
         $cmd = 'eyeD3';
         if (isset($arrMetadata['Artist']) and $arrMetadata['Artist'] != '') {
             $cmd .= ' --artist="' . $arrMetadata['Artist'] . '"';
@@ -575,15 +594,23 @@ function generateOutputTracksAsMp3($input, $output, $arrMetadata)
         if (isset($arrMetadata['AlbumArt']) and $arrMetadata['AlbumArt'] != '') {
             $cmd .= ' --add-image "' . $arrMetadata['AlbumArt'] . '":FRONT_COVER';
         }
+        debugout::add('📦 CP5' . PHP_EOL );
         $cmd .= ' "' . $output . '"';
+        debugout::add('📦 CP6' . PHP_EOL );
         if (debugExec($cmd) != 0) {
+            debugout::add('📦 CP7' . PHP_EOL );
             if (file_exists($output)) {
+                debugout::add('📦 CP8' . PHP_EOL );
                 debugUnlink($output);
+                debugout::add('📦 CP9' . PHP_EOL );
             }
+            debugout::add('📦 CP10' . PHP_EOL );
             return false;
         }
+        debugout::add('📦 CP11' . PHP_EOL );
         return true;
     } else {
+        debugout::add('📦 CP12' . PHP_EOL );
         return false;
     }
 }
@@ -773,7 +800,7 @@ function debugUnlink($file, $pointer = '')
     if ($pointer != '' && isset($GLOBALS['DEBUG']) && $GLOBALS['DEBUG']) {
         debugout::dump("Unlinking file $file at $pointer");
     }
-    if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES']) {
+    if (!isset($GLOBALS['NODELETEFILES']) or ! $GLOBALS['NODELETEFILES'] && is_file($file)) {
         unlink($file);
     } else {
         debugout::dump("Would be deleting $file now");
@@ -857,6 +884,7 @@ function downloadFile($url, $loop_count = 1, $loop_max = 5)
  */
 function curlGetResource($url, $as_file = 1, $javascript_loop = 0, $timeout = 10000, $max_loop = 10)
 {
+    echo($url);
     $url = str_replace("&amp;", "&", urldecode(trim($url)));
     $ch = curl_init();
 

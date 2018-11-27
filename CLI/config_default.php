@@ -32,8 +32,8 @@ class Configuration
 
     private $username       = 'admin';
     private $password       = 'admin';
-    private $url_base       = 'cchits.net/api';
-    private $protocol       = 'https';
+    private $url_base       = 'cchits.local/api';
+    private $protocol       = 'http';
     private $api            = '';
     private $WorkingDir     = '';
     private $StaticDir      = '';
@@ -42,7 +42,7 @@ class Configuration
     private $StatusNetUrl   = 'cchits.net/comments/api/statuses/';
     private $StatusNetUser  = '';
     private $StatusNetPass  = '';
-    private $scptarget      = 'cchits.net';
+    private $scptarget      = 'cchits.local';
     private $scptargetpath  = '';
     private $scpuser        = 'admin';
     private $scppass        = 'admin';
@@ -59,7 +59,6 @@ class Configuration
         }
         return self::$config_handler;
     }
-
     /**
      * Import all the appropriate details here and parse them into formats we need.
      *
@@ -67,6 +66,7 @@ class Configuration
      */
     function __construct()
     {
+        $GLOBALS['NODELETEFILES'] = true;
         $this->WorkingDir = dirname(__FILE__) . '/TEMP';
         $this->StaticDir = dirname(__FILE__) . '/STATIC';
 
@@ -127,7 +127,7 @@ class Configuration
      *
      * @return string API path.
      */
-    function getAPI()
+    static function getAPI()
     {
         $handler = self::getHandler();
         return $handler->api;
@@ -138,10 +138,13 @@ class Configuration
      *
      * @return string Working Directory path
      */
-    function getWorkingDir()
+    static function getWorkingDir()
     {
         $handler = self::getHandler();
+        echo('> ');
+        echo($handler->WorkingDir);
         return $handler->WorkingDir;
+
     }
 
     /**
@@ -149,7 +152,7 @@ class Configuration
      *
      * @return string Static Directory path
      */
-    function getStaticDir()
+    static function getStaticDir()
     {
         $handler = self::getHandler();
         return $handler->StaticDir;
@@ -171,7 +174,7 @@ class Configuration
      *
      * @return string StatusNetUser Username
      */
-    function getStatusNetUser()
+    static function getStatusNetUser()
     {
         $handler = self::getHandler();
         return $handler->StatusNetUser;

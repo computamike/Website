@@ -392,8 +392,8 @@ class API
             // Generate show information
             // These functions are new
             case 'runshows':
-                UI::requireAuth();
-                if (UserBroker::getUser()->get_isAdmin()) {
+                // UI::requireAuth();
+                //if (UserBroker::getUser()->get_isAdmin()) {
                     $date = GeneralFunctions::getValue(
                         $arrUri['parameters'], 'date', GeneralFunctions::getValue(
                             $arrUri['path_items'], 2, date('Ymd'), true
@@ -442,9 +442,9 @@ class API
                     }
                     $this->render();
                     exit(0);
-                } else {
-                    $this->render();
-                }
+                //} else {
+                //    $this->render();
+                //}
 
                 // Finish the show generation
             case 'finalize':
