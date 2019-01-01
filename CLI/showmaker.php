@@ -31,7 +31,7 @@ $GLOBALS['NODELETEFILES'] = false;
 $pre_sable = '<?xml version="1.0"?>
 <!DOCTYPE SABLE PUBLIC "-//SABLE//DTD SABLE speech mark up//EN" "Sable.v0_2.dtd" []>
 <SABLE>
-  <SPEAKER NAME="cmu_us_clb_arctic_clunits">
+  <SPEAKER NAME="male1">
     <RATE SPEED="+25%">
 ';
 $post_sable = '
@@ -100,6 +100,7 @@ if ($historic) {
 $data = curlGetResource($get, 0);
 // Hacky work around to stop error messages!
 $data = curlGetResource($get, 0);
+print_r($data);
 if ($data != false and isset($data[0]) and strlen($data[0]) > 0) {
     $json_data = makeArrayFromObjects(json_decode($data[0]));
     $f = fopen(Configuration::getWorkingDir() . '/showmaker.json', 'w');

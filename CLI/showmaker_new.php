@@ -62,22 +62,31 @@ class showSpeech {
         $this->description = $description;
     }
     public function process(){
+        // echo(Configuration::getWorkingDir() );
+        //convertSableXmlToWav($this->script , Configuration::getWorkingDir() . '/bumper.sdf.wav');
         echo(' 👄  DJ SAY : ' . $this->script . PHP_EOL );
         $this->duration=rand(10,20);
     }
 }
-
-class DailyShow {
-    private $showName = "Daily Show";
-    private $siteName = 'CCHits';
-    private $introScript = [
-        'Hello and welcome to the %1$s from %2$s <BREAK LEVEL="MEDIUM" /> To dayz show features ',
-        'Hey there <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %2$s and this is the %1$s <BREAK LEVEL="MEDIUM" /> To day you can hear '];
-
-    private $available_Intro_text =  'INTRO: The @%1$s daily show for today (%2$s) features %3$s by %4$s';
+abstract class baseShow{
     private $track_list = [];
-    private $outro_text = 'OUTRO: You have been listening to CChits - ';
-    
+    public function process_show(){
+        echo('✨ Processing Show'.PHP_EOL);
+        //echo(' 🎹  DJ PLAY : CChits Intro' . PHP_EOL );
+        //echo(' 👄  DJ SAY : ' . $this->name . PHP_EOL );
+        //echo(' 👄  DJ SAY2 : ' . $this->available_Intro_text. PHP_EOL );
+        $updatedtrack_list = [];
+        $TimeOffset = 0;
+        foreach ($this->track_list  as $track)
+        {
+            $element = reset($track);
+            $element->process();
+            array_push ($updatedtrack_list, array(strval($TimeOffset) => $element));
+            $TimeOffset  = $TimeOffset  + $element->duration ;
+        }
+        $this->track_list = $updatedtrack_list;
+        echo(' ✨  Convert to MP3, OGG and MP4');
+    }
     /**
      * Add a Show element (voice over, track...)
      *
@@ -85,10 +94,23 @@ class DailyShow {
      * @param [type] $object
      * @return void
      */
-    private function addShowElement($TimeOffset,$object){
+    public function addShowElement($TimeOffset,$object){
         array_push ($this->track_list, array($TimeOffset => $object));
     }
+    public function toJSON(){
+        return json_encode($this->track_list, JSON_PRETTY_PRINT);
+    }
+}
+class DailyShow extends baseShow{
+    private $showName = "Daily Show";
+    private $siteName = 'CCHits';
+    private $introScript = [
+        'Hello and welcome to the %1$s from %2$s <BREAK LEVEL="MEDIUM" /> To dayz show features ',
+        'Hey there <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %2$s and this is the %1$s <BREAK LEVEL="MEDIUM" /> To day you can hear '];
 
+    private $available_Intro_text =  'INTRO: The @%1$s daily show for today (%2$s) features %3$s by %4$s';
+    private $outro_text = 'OUTRO: You have been listening to CChits - ';
+    
     public function __construct(){
         $this->available_Intro_text = sprintf(Utility::randomTextSelect($this->introScript),$this->showName, $this->siteName);  
         $intro = new showSpeech($this->available_Intro_text,'description');
@@ -117,32 +139,6 @@ class DailyShow {
         //array_push ( $this->track_list,$track);
     }
 
-    public function process_show(){
-        echo('✨ Processing Show'.PHP_EOL);
-        //echo(' 🎹  DJ PLAY : CChits Intro' . PHP_EOL );
-        //echo(' 👄  DJ SAY : ' . $this->name . PHP_EOL );
-        //echo(' 👄  DJ SAY2 : ' . $this->available_Intro_text. PHP_EOL );
-        $updatedtrack_list = [];
-        $TimeOffset = 0;
-        foreach ($this->track_list  as $track)
-        {
-            $element = reset($track);
-            $element->process();
-            array_push ($updatedtrack_list, array(strval($TimeOffset) => $element));
-            $TimeOffset  = $TimeOffset  + $element->duration ;
-        }
-        $this->track_list = $updatedtrack_list;
-        echo(' ✨  Convert to MP3, OGG and MP4');
-    }
-
-    public function jsonSerialize() {
-        return $this->track_list;
-    }
-
-    public function toJSON(){
-        return json_encode($this->track_list, JSON_PRETTY_PRINT);
-    }
-
 }
 
 /**
@@ -161,7 +157,6 @@ class ShowMaker{
 }
 
 
-
 $sm = new ShowMaker();
 
 // This should eventually provide a weekly monthly or daily object...
@@ -177,11 +172,4 @@ $dailyShow = $sm->MakeShow();
 $dailyShow->process_show();
 
 $t = $dailyShow->toJSON();
-echo($t);
-
-// echo('serialized DAILY SHOW'.PHP_EOL);
-// echo('   '.PHP_EOL);
-// echo('   '.PHP_EOL);
-// echo str_replace('\"','"', $s);
-// echo('   '.PHP_EOL);
-// All Done.
+//echo($t);
