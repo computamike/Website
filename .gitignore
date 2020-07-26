@@ -16,3 +16,4 @@ patch
 Website.iml
 php.log
 /vendor/
+/reports/

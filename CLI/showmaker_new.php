@@ -157,19 +157,19 @@ class ShowMaker{
 }
 
 
-$sm = new ShowMaker();
+// $sm = new ShowMaker();
 
-// This should eventually provide a weekly monthly or daily object...
-$dailyShow = $sm->MakeShow();
+// // This should eventually provide a weekly monthly or daily object...
+// $dailyShow = $sm->MakeShow();
 
-// Let's create a track : - this should be 
+// // Let's create a track : - this should be 
 
 
-// so we've set up our show
-// $dailyShow->add_track($Track1);
-// var_dump($dailyShow);
-// Now we tell it process...
-$dailyShow->process_show();
+// // so we've set up our show
+// // $dailyShow->add_track($Track1);
+// // var_dump($dailyShow);
+// // Now we tell it process...
+// $dailyShow->process_show();
 
-$t = $dailyShow->toJSON();
-//echo($t);
+// $t = $dailyShow->toJSON();
+// //echo($t);

@@ -3,10 +3,17 @@
     "description": "CCHits website",
     "type": "project",
     "license": "AGPLv3",
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    },
     "support": {
         "email": "code@cchits.net",
         "issues": "https://github.com/CCHits/Website/issues",
         "wiki": "https://github.com/CCHits/Website/wiki",
         "source": "https://github.com/CCHits/Website"
+    },
+    "require": {
+        "phpunit/phpunit": "5.7.27",
+        "mockery/mockery": "^1.2"
     }
 }

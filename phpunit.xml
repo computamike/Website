@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/5.7/phpunit.xsd"
+         bootstrap="TESTS/bootstrap.php"
+         backupGlobals="false"
+         beStrictAboutCoversAnnotation="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         verbose="true">
+    <groups>
+        <exclude><!-- I want to EXCLUDE this group, run all others -->
+            <group>first-round</group>
+        </exclude>
+    </groups>
+    <testsuite name="default">
+        <directory suffix="Test.php">./TESTS</directory>
+    </testsuite>
+    <logging>
+        <log type="coverage-html" target="reports/html" lowUpperBound="35"
+            highLowerBound="70"/>
+        <log type="coverage-clover" target="reports/clover/coverage.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+        <log type="junit" target="reports/junit/logfile.xml"/>
+        <log type="testdox-html" target="reports/testdox-html/testdox.html"/>
+        <log type="testdox-text" target="reports/testdox-text/testdox.txt"/>
+    </logging>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">src</directory>
+            <file>CLI/showmaker_new.php</file>
+
+        </whitelist>
+    </filter>
+</phpunit>
