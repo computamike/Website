@@ -1,0 +1,19 @@
+version: '3.4'
+services:
+  website:
+    build:
+      context: .
+      dockerfile: php56.Dockerfile
+    volumes: 
+      - './:/var/www/html'
+    ports: 
+      - '80:80'
+  mysql1:
+    image: 'mysql:5.7'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: cchits
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret

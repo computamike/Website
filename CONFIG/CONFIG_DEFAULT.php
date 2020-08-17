@@ -20,11 +20,12 @@
  */
 
 $RW_TYPE = 'mysql';
-$RW_HOST = '127.0.0.1';
+$RW_HOST = 'cchits_mysql1_1';
 $RW_PORT = '3306';
 $RW_BASE = 'cchits';
 $RW_USER = 'homestead';
 $RW_PASS = 'secret';
+
 
 $SPLIT_RO_RW = false;
 
@@ -35,7 +36,7 @@ $RO_BASE = '';
 $RO_USER = '';
 $RO_PASS = '';
 
-$APPCONFIG = array();
+$APPCONFIG = array("Site Name"=>"CC Hits.net");
 
 date_default_timezone_set("UTC");
 

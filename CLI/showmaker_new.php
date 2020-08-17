@@ -1,4 +1,16 @@
 <?php
+/// Notes : 
+// Basic Process . 
+//
+// Create a Show Object
+// Load it with Tracks (the correct number, and in the correct order.)
+// Generate the IntroText script object
+// Generate the Bumper object(s)
+// Add the Outro 
+
+ 
+require_once '/var/www/html/CLASSES/class_ConfigBroker.php';
+require_once '/var/www/html/CLASSES/class_Database.php';
 require_once 'config_default.php'; // Adjust config_local to set your own local variables.
 require_once 'library.php';
 
@@ -26,20 +38,20 @@ class Utility{
         return true;
     }
 
-    /**
-     * Provided an array of strings is provided, select one at random and return it
-     *
-     * @param array $array An array of strings to return.
-     *
-     * @return string|boolean One string selected at random, or nothing at all.
-     */
-    static function randomTextSelect($array)
-    {
-        if (! is_array($array) or count($array) == 0) {
-            return false;
-        }
-        return $array[rand(0, count($array) -1)];
-    }
+    // /**
+    //  * Provided an array of strings is provided, select one at random and return it
+    //  *
+    //  * @param array $array An array of strings to return.
+    //  *
+    //  * @return string|boolean One string selected at random, or nothing at all.
+    //  */
+    // static function randomTextSelect($array)
+    // {
+    //     if (! is_array($array) or count($array) == 0) {
+    //         return false;
+    //     }
+    //     return $array[rand(0, count($array) -1)];
+    // }
 }
 
 /**
@@ -101,9 +113,17 @@ abstract class baseShow{
         return json_encode($this->track_list, JSON_PRETTY_PRINT);
     }
 }
+
+/**
+ * Devloper Notes :
+ * It is worth talking briefly about how the introscript wil be created - 
+ * A track has a private collection of $introScript, and uses PHP's string template strstr to inject parameters, as this seems a nice way of formatting longer strings.
+ */
+
 class DailyShow extends baseShow{
     private $showName = "Daily Show";
-    private $siteName = 'CCHits';
+    private $siteName = "CCHits";
+    
     private $introScript = [
         'Hello and welcome to the %1$s from %2$s <BREAK LEVEL="MEDIUM" /> To dayz show features ',
         'Hey there <BREAK LEVEL="MEDIUM" /> You are listening to a feed from %2$s and this is the %1$s <BREAK LEVEL="MEDIUM" /> To day you can hear '];
@@ -112,17 +132,22 @@ class DailyShow extends baseShow{
     private $outro_text = 'OUTRO: You have been listening to CChits - ';
     
     public function __construct(){
-        $this->available_Intro_text = sprintf(Utility::randomTextSelect($this->introScript),$this->showName, $this->siteName);  
-        $intro = new showSpeech($this->available_Intro_text,'description');
-        $this->addShowElement("1",$intro);
-        // This track object would be returned from the database usually
-        $Track1 = new showTrack();
-        $Track1->TrackName = 'This is My Jam';
-        $Track1->TrackID = 100;
-        $Track1->Artist = 'Jam Master 5000';
-        $Track1->TrackURL = 'http://foobar';
-        $this->addShowElement("15",$Track1);
-        $this->addShowElement("40",new showSpeech($this->outro_text,'description'));
+        $this->siteName = ConfigBroker::getConfig('Site Name', 'CCHits.net');
+        $this->available_Intro_text = sprintf(randomTextSelect($this->introScript),$this->showName, $this->siteName);  
+
+
+
+
+        // $intro = new showSpeech($this->available_Intro_text,'Intro');
+        // $this->addShowElement("1",$intro);
+        // // This track object would be returned from the database usually
+        // $Track1 = new showTrack();
+        // $Track1->TrackName = 'This is My Jam';
+        // $Track1->TrackID = 100;
+        // $Track1->Artist = 'Jam Master 5000';
+        // $Track1->TrackURL = 'http://foobar';
+        // $this->addShowElement("15",$Track1);
+        // $this->addShowElement("40",new showSpeech($this->outro_text,'Outro'));
         
     }
 
@@ -131,6 +156,8 @@ class DailyShow extends baseShow{
     {
         if ($property == 'showName') { return $this->showName; }
         if ($property == 'siteName') { return $this->siteName; }
+        if ($property == 'available_Intro_text') { return $this->available_Intro_text; }
+        
     }
  
     public function add_track($track){
