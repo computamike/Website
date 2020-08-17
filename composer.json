@@ -14,6 +14,7 @@
     },
     "require": {
         "phpunit/phpunit": "5.7.27",
-        "mockery/mockery": "^1.2"
+        "mockery/mockery": "^1.2",
+        "antecedent/patchwork": "^2.1"
     }
 }
