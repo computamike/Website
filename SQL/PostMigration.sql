@@ -1,0 +1,66 @@
+#Post Import Activities
+#----------------------
+#
+#SQL Queries
+#======================
+use cchits;
+
+ALTER TABLE `shows` CHANGE `datDateAdded` `datDateAdded` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+INSERT INTO showtracks SELECT shows.intShowID, 1, tracks.intTrackID FROM shows, tracks WHERE tracks.datDailyShow=shows.intShowUrl AND shows.enumShowType='daily' ORDER BY intShowID;
+
+ALTER TABLE `users` ADD `strEMail` TEXT NULL AFTER `strOpenID`;
+ALTER TABLE `users` CHANGE `strOpenID` `strOpenID` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `strCookieID` `strCookieID` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `sha1Pass` `sha1Pass` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+#UPDATE users SET strOpenID = NULL WHERE strOpenID = '';
+#UPDATE users SET strEMail = NULL WHERE strEMail = '';
+#UPDATE users SET strCookieID = NULL WHERE strCookieID = '';
+#UPDATE users SET sha1Pass = NULL WHERE sha1Pass = '';
+
+CREATE TABLE `processing` (
+`intProcessingID` INT NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+`strTrackName` TEXT NOT NULL ,
+`strTrackNameSounds` TEXT NOT NULL ,
+`strTrackUrl` TEXT NOT NULL ,
+`enumTrackLicense` ENUM( 'cc-by', 'cc-by-sa', 'cc-by-nd', 'cc-by-nc', 'cc-by-nc-sa', 'cc-by-nc-nd', 'cc-0', 'none specified', 'cc-nc-sampling+', 'cc-sampling+', 'cc-sa', 'cc-nc', 'cc-nd', 'cc-nc-sa', 'cc-nc-nd' ) NOT NULL ,
+`intArtistID` INT NOT NULL ,
+`strArtistName` TEXT NOT NULL ,
+`strArtistNameSounds` TEXT NOT NULL ,
+`strArtistUrl` TEXT NOT NULL ,
+`isNSFW` BOOLEAN NOT NULL ,
+`fileUrl` TEXT NOT NULL ,
+`fileName` TEXT NOT NULL ,
+`intUserID` INT NOT NULL ,
+`fileMD5` VARCHAR(64) NOT NULL ,
+`forceMD5Duplicate` TINYINT(1) NOT NULL,
+`forceTrackNameDuplicate` TINYINT(1) NOT NULL,
+`forceTrackUrlDuplicate` TINYINT(1) NOT NULL
+) ENGINE = MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+TRUNCATE `config`;
+
+INSERT INTO `config` (`key`, `value`) VALUES ('fileBase', '');
+INSERT INTO `config` (`key`, `value`) VALUES ('baseURL', '');
+INSERT INTO `config` (`key`, `value`) VALUES ('Soundcloud API', '');
+
+ALTER TABLE tracks ADD intDuplicateID INT NOT NULL AFTER isApproved;
+
+ALTER TABLE `shows` CHANGE `strShowName` `strShowName` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `strShowUrl` `strShowUrl` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `shaHash` `shaHash` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ,
+CHANGE `strCommentUrl` `strCommentUrl` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+CHANGE `jsonAudioLayout` `jsonAudioLayout` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL;
+
+UPDATE shows SET strShowName = NULL WHERE strShowName = '';
+UPDATE shows SET strShowUrl = NULL WHERE strShowUrl = '';
+UPDATE shows SET shaHash = NULL WHERE shaHash = '';
+UPDATE shows SET strCommentUrl = NULL WHERE strCommentUrl = '';
+UPDATE shows SET jsonAudioLayout = NULL WHERE jsonAudioLayout = '';
+UPDATE shows SET intUserID = 1 WHERE intUserID = 0;
+
+#File Movements
+##=======================
+#mv /path/to/media/tracks /path/to/media/track
+#mv /path/to/media/shows /path/to/media/show
