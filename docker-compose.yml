@@ -1,0 +1,24 @@
+version: '3.4'
+services:
+  website:
+    build:
+      context: .
+      dockerfile: php56.Dockerfile
+    volumes:
+      - './:/var/www/html'
+    ports:
+      - '80:80'
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1 max_children=128 max_data=512 max_depth=3
+  mysql1:
+    image: 'mysql:5.7'
+    volumes:
+      - './SQL/db.mysql:/docker-entrypoint-initdb.d/migration.sql'
+      - './SQL/PostMigration.sql:/docker-entrypoint-initdb.d/postMigration.sql'
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: cchits
+      MYSQL_DATABASE: cchits
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: secret
