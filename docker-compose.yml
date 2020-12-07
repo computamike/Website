@@ -20,5 +20,5 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: cchits
       MYSQL_DATABASE: cchits
-      MYSQL_USER: homestead
-      MYSQL_PASSWORD: secret
+      MYSQL_USER: cchits
+      MYSQL_PASSWORD: cchits
