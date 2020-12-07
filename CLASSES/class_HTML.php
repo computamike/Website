@@ -878,17 +878,23 @@ class HTML
         $chart = ChartBroker::getChartByDate('', 0, 15);
         $this->result['chart'] = $chart['position'];
         $internal_show = ShowBroker::getInternalShowByType('daily', 1);
-        $show = end($internal_show);
-        $show->set_featuring(false);
-        $this->result['daily'] = $show->getSelf();
+        if ($internal_show){
+            $show = end($internal_show);
+            $show->set_featuring(false);
+            $this->result['daily'] = $show->getSelf();
+        }
         $internal_show = ShowBroker::getInternalShowByType('weekly', 1);
-        $show = end($internal_show);
-        $show->set_featuring(false);
-        $this->result['weekly'] = $show->getSelf();
+        if ($internal_show){
+            $show = end($internal_show);
+            $show->set_featuring(false);
+            $this->result['weekly'] = $show->getSelf();
+        }
         $internal_show = ShowBroker::getInternalShowByType('monthly', 1);
-        $show = end($internal_show);
-        $show->set_featuring(false);
-        $this->result['monthly'] = $show->getSelf();
+        if ($internal_show){
+            $show = end($internal_show);
+            $show->set_featuring(false);
+            $this->result['monthly'] = $show->getSelf();
+        }
         if ($this->render()) {
             if ($this->format == 'html') {
                 $this->result['daily_player_json'] = json_encode(array($this->result['daily']['player_data']));
