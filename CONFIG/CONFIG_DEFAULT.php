@@ -20,11 +20,11 @@
  */
 
 $RW_TYPE = 'mysql';
-$RW_HOST = '127.0.0.1';
+$RW_HOST = 'mysql1';
 $RW_PORT = '3306';
 $RW_BASE = 'cchits';
-$RW_USER = 'root';
-$RW_PASS = '';
+$RW_USER = 'cchits';
+$RW_PASS = 'cchits';
 
 $SPLIT_RO_RW = false;
 
