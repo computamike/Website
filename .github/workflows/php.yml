@@ -13,7 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
+    - uses: nanasess/setup-php@master
+      with:
+        php-version: '5.6'
     - name: Validate composer.json and composer.lock
       run: composer validate
 
@@ -36,5 +38,7 @@ jobs:
     # The current travis script spins up a MySQL DB - which isn't required for unit testing, and for Code Sniffs.
     # - php ci/phpcs/phpcs.phar --standard=ci/phpcs CLASSES/
     # - phpunit --configuration ci/conf/travis.xml --bootstrap CLASSES/autoloader.php TESTS/
-    # - name: Run test suite
-    #   run: composer run-script test
+    - name: php Code Sniff
+      run: php ci/phpcs/phpcs.phar --standard=ci/phpcs CLASSES/
+    - name: Unit Tests
+      run: phpunit --configuration ci/conf/travis.xml --bootstrap CLASSES/autoloader.php TESTS/
